@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <!-- fragmento 1 para Agregar categoria en ventana modal -->
+    <section th:fragment="agregar">
+        <!-- Button trigger modal -->
+        <div class="row py-4 mb-2 bg-light">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <button type="button" class="btn btn-primary"
+                        data-bs-toggle="modal" data-bs-target="#agregarCategoriaModal">
+                    <i class="fa-solid fa-plus"></i> [[#{categoria.agregar}]]</button>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="agregarCategoriaModal" tabindex="-1"
+             aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">
+                            <i class="fa-solid fa-layer-group"></i> [[#{categoria.agregar}]]</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form th:action="@{/categoria/guardar}" th:object="${categoria}"
+                          class="was-validated" enctype="multipart/form-data" method="post">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label>[[#{categoria.descripcion}]]</label>
+                                <input type="text" name="descripcion" class="form-control" required="true"/></div>
+                            <div class="mb-3">
+                                <label>[[#{categoria.activo}]]</label>
+                                <input type="checkbox" name="activo" class="form-check-input"/></div>
+                            <div class="mb-3">
+                                <label>[[#{categoria.imagen}]]</label>
+                                <input type="file" name="imagenFile" onchange="mostrarImagen(this);"
+                                       class="form-control"/>
+                                <img id="blah" src="#" alt="imagen de categoria" height="200"/></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fa-solid fa-xmark"></i> [[#{accion.cerrar}]]</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i> [[#{accion.guardar}]]</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- fragmento 2 para el listado de categorias -->
+    <section th:fragment="listado" class="p-3">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>[[#{categoria.listado}]]</h4>
+                    </div>
+                    <div th:if="${categorias != null and !categorias.empty}">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>[[#{categoria.descripcion}]]</th>
+                                    <th>[[#{categoria.imagen}]]</th>
+                                    <th>[[#{categoria.activo}]]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="categoria : ${categorias}">
+                                    <td>[[${categoria.idCategoria}]]</td>
+                                    <td>[[${categoria.descripcion}]]</td>
+                                    <td><img th:src="${categoria.rutaImagen}" alt="" height="60"/></td>
+                                    <td th:text="${categoria.activo} ? 'Activa' : 'Inactiva'"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center p-2" th:if="${categorias == null or categorias.empty}">
+                        <span>[[#{lista.vacia}]]</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center bg-success text-white mb-3">
+                    <div class="card-body">
+                        <h3>[[#{categoria.total}]]</h3>
+                        <h4 class="fs-2"><i class="fas fa-layer-group"></i> [[${totalCategorias}]]</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3 Fragmento que se utiliza en la página modifica.html -->
+    <section th:fragment="editar">
+
+    </section>
+
+    <!-- 4 fragmento que se utiliza para confirmar que se desea eliminar una categoria -->
+    <section th:fragment="confirmarEliminar">
+
+    </section>
+</html>
