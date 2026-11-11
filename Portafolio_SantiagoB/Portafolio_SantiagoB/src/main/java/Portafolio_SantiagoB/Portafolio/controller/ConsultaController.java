@@ -57,5 +57,12 @@ public class ConsultaController {
         model.addAttribute("precioInf", precioInf);
         model.addAttribute("precioSup", precioSup);
         return "/consultas/listado";
+    } 
+    @PostMapping("/consultaPorNombre")
+    public String consultaPorNombre(@RequestParam() String texto, Model model) {
+        var lista = productoService.consultaPorNombre(texto);
+        model.addAttribute("productos", lista);
+        model.addAttribute("texto", texto);
+        return "/consultas/listado";
     }
 }
