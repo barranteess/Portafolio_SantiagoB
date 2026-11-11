@@ -14,11 +14,13 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+import java.nio.file.Paths;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 @Configuration
 public class ProjectConfig implements WebMvcConfigurer {
 
-    /* Los siguiente métodos son para implementar el tema de seguridad dentro del proyecto */
+   
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("index");
@@ -28,8 +30,12 @@ public class ProjectConfig implements WebMvcConfigurer {
         registry.addViewController("/login").setViewName("login");
         registry.addViewController("/registro/nuevo").setViewName("/registro/nuevo");
     }
-
-    /* El siguiente método se utilizara para publicar en la nube, independiente   */
+ @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String carpeta = Paths.get("imagenes").toAbsolutePath().toUri().toString();
+        registry.addResourceHandler("/imagenes/**").addResourceLocations(carpeta);
+    }
+    
     @Bean
     public SpringResourceTemplateResolver templateResolver_0() {
         SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
