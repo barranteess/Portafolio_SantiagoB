@@ -9,6 +9,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import lombok.Data;
+import jakarta.persistence.OneToMany;
+import java.util.List;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -33,4 +37,9 @@ public class Categoria implements Serializable {
 
     @Column(name = "activo")
     private Boolean activo;
+    
+    @OneToMany(mappedBy = "categoria")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Producto> productos;
 }
