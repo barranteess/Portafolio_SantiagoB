@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
    
     <section th:fragment="agregar">
         <div class="row py-4 mb-2 bg-light">
             <div class="col-md-1"></div>
-            <div class="col-md-3">
+            <div class="col-md-3" sec:authorize="hasRole('ROLE_ADMIN')">
                 <button type="button" class="btn btn-primary"
                         data-bs-toggle="modal" data-bs-target="#agregarCategoriaModal">
                     <i class="fa-solid fa-plus"></i> [[#{categoria.agregar}]]</button>
@@ -64,7 +65,7 @@
                                     <th>[[#{categoria.descripcion}]]</th>
                                     <th>[[#{categoria.imagen}]]</th>
                                     <th>[[#{categoria.activo}]]</th>
-                                    <th></th>
+                                     <th sec:authorize="hasRole('ROLE_ADMIN')"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -73,7 +74,7 @@
                                     <td>[[${categoria.descripcion}]]</td>
                                     <td><img th:src="${categoria.rutaImagen}" alt="" height="60"/></td>
                                     <td th:text="${categoria.activo} ? 'Activa' : 'Inactiva'"></td>
-                                    <td>
+                                     <td sec:authorize="hasRole('ROLE_ADMIN')">
                                         <button type="button" class="btn btn-danger btn-sm"
                                                 data-bs-toggle="modal" data-bs-target="#confirmModal"
                                                 th:attr="data-bs-id=${categoria.idCategoria},data-bs-descripcion=${categoria.descripcion}">
