@@ -4,10 +4,10 @@
  */
 package Portafolio_SantiagoB.Portafolio.repository;
 
-/**
- *
- * @author barra
- */
-public interface UsuarioRepository {
-    
+import Portafolio_SantiagoB.Portafolio.domain.Usuario;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
+    Optional<Usuario> findByUsernameAndActivoTrue(String username);
 }

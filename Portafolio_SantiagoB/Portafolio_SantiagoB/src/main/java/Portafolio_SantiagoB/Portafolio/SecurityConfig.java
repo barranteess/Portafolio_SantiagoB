@@ -14,34 +14,47 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import Portafolio_SantiagoB.Portafolio.domain.Ruta;
+import Portafolio_SantiagoB.Portafolio.service.RutaService;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configuration
 public class SecurityConfig {
 
-    public static final String[] PUBLIC_URLS = {
-        "/", "/index", "/fav/**", "/carrito/**", "/consultas/**", "/registro/**",
-        "/js/**", "/css/**", "/img/**", "/imagenes/**", "/webjars/**",
-        "/login", "/acceso_denegado"
-    };
-    public static final String[] USUARIO_URLS = {
-        "/facturar/carrito"
-    };
-    public static final String[] ADMIN_OR_VENDEDOR_URLS = {
-        "/producto/listado", "/categoria/listado", "/usuario/listado"
-    };
-    public static final String[] ADMIN_URLS = {
-        "/producto/**", "/categoria/**", "/usuario/**"
-    };
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request -> request
-                .requestMatchers(PUBLIC_URLS).permitAll()
-                .requestMatchers(USUARIO_URLS).hasRole("USUARIO")
-                .requestMatchers(ADMIN_OR_VENDEDOR_URLS).hasAnyRole("ADMIN", "VENDEDOR")
-                .requestMatchers(ADMIN_URLS).hasRole("ADMIN")
-                .anyRequest().authenticated()
-        ).formLogin(form -> form // Configuración de formulario de login
+
+     @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, RutaService rutaService) throws Exception {
+        var rutas = rutaService.getRutas();
+
+        // Se agrupan los roles por ruta (por si una ruta tiene varios roles, ej: ADMIN y VENDEDOR)
+        Map<String, List<String>> rutasConRol = new LinkedHashMap<>();
+        for (Ruta ruta : rutas) {
+            if (ruta.isRequiereRol()) {
+                rutasConRol.computeIfAbsent(ruta.getRuta(), r -> new ArrayList<>())
+                        .add(ruta.getRol().getRol());
+            }
+        }
+
+        http.authorizeHttpRequests(requests -> {
+            for (Ruta ruta : rutas) {
+                if (!ruta.isRequiereRol()) {
+                    requests.requestMatchers(ruta.getRuta()).permitAll();
+                }
+            }
+            for (var entrada : rutasConRol.entrySet()) {
+                requests.requestMatchers(entrada.getKey())
+                        .hasAnyRole(entrada.getValue().toArray(String[]::new));
+            }
+            requests.anyRequest().authenticated();
+        });
+        http.formLogin(form -> form // Configuración de formulario de login
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/", true)
@@ -67,8 +80,8 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    //Este método será reemplazado la siguiente semana
-    @Bean
+   
+   /* @Bean
     public UserDetailsService users(PasswordEncoder passwordEncoder) {
         UserDetails juan = User.builder()
                 .username("juan")
@@ -86,5 +99,12 @@ public class SecurityConfig {
                 .roles("USUARIO")
                 .build();
         return new InMemoryUserDetailsManager(juan, rebeca, pedro);
+    }*/
+    
+    @Autowired
+    public void configurerGlobal(AuthenticationManagerBuilder build,
+            @Lazy PasswordEncoder passwordEncoder,
+            @Lazy UserDetailsService userDetailsService) throws Exception {
+        build.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 }
