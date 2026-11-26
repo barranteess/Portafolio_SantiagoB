@@ -18,9 +18,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
      <script th:src="@{/js/rutinas.js}"></script>
     <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <link th:href="@{/css/estilos.css}" rel="stylesheet"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 
-<header th:fragment="header" class="header">
+<header th:fragment="header" class="header d-print-none">
     <nav class="navbar navbar-expand-sm p-0">
         <div class="container">
             <a th:href="@{/}" class="navbar-brand">[[#{aplicacion.titulo}]]</a>
@@ -107,7 +110,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </section>
 </header>
 
-<footer th:fragment="footer" class="p-2 mt-5 bg-info text-white">
+<footer th:fragment="footer" class="p-2 mt-5 bg-info text-white d-print-none">
     <p class="lead text-center">[[#{plantilla.derechos}]] &COPY;</p>
 </footer> 
 

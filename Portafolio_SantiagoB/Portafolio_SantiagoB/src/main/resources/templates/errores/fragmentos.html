@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<!-- Fragmento que muestra un mensaje de error (por ejemplo, stock insuficiente al agregar al carrito) -->
+<div th:fragment="errorMensaje" class="d-flex align-items-center gap-2">
+    <div class="alert alert-danger py-1 px-2 my-auto" role="alert">
+        <i class="fa-solid fa-triangle-exclamation"></i> [[${errorMensaje}]]
+    </div>
+    <a th:href="@{/carrito/listado}" class="btn btn-primary">
+        <i class="fas fa-cart-plus"></i> [[#{carrito.verCarrito}]]
+    </a>
+</div>
